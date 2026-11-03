@@ -30,7 +30,7 @@ object CommandCollector {
     }
 
     fun collect(nextOnly: Boolean = false): String {
-        val source = if (nextOnly) listOf(buffer.first()) else buffer
+        val source = if (nextOnly) buffer.take(1) else buffer
 
         return source
             .map {
