@@ -1,6 +1,5 @@
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.math.absoluteValue
 
 fun generateHtml(packageModel: PackageIndex) = buildString {
         append(generateHead())
@@ -85,8 +84,10 @@ fun filterPkgInfo(changeLog: String?): String? {
 }
 
 
+// Six hex digits from the low 24 bits of the hash, so short versions ("1",
+// "1.0") whose hash has fewer digits still give a valid colour
 fun generateVersionColor(rawVersion: String) =
-    "#${rawVersion.hashCode().absoluteValue.toString(16).substring(0..5)}"
+    "#%06x".format(rawVersion.hashCode() and 0xFFFFFF)
 
 
 
