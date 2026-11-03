@@ -49,16 +49,18 @@ fun generatePackageSummary(pkg: CrossPPAPackageDescriptor): String {
 //          <div class="short-div p-1">1.92</div>
 //          <div class="short-div p-1">1.99</div>
 //        </div>
+// The releases shown, in order: one header per release and one version row
+// per release in each PPA column
+val shownReleases = UbuntuRelease.values().filter { it.active }
+
 fun generateVersionMatrix(ppaPackageDesc: CrossPPAPackageDescriptor) = buildString {
     for ((ppa, ubuntuVersionMap) in ppaPackageDesc.versionMap) {
-        append("""
-<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-  <div class="short-div ppa-header">${ppa.name.toLowerCase()}</div>
-  <div class="short-div p-1">${formatVersion(ubuntuVersionMap[UbuntuRelease.bionic])}</div> 
-  <div class="short-div p-1">${formatVersion(ubuntuVersionMap[UbuntuRelease.focal])}</div>
-  <div class="short-div p-1">${formatVersion(ubuntuVersionMap[UbuntuRelease.groovy])}</div>
-</div>
-""".trimIndent())
+        append("""<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">""").append('\n')
+        append("""  <div class="short-div ppa-header">${ppa.name.toLowerCase()}</div>""").append('\n')
+        for (release in shownReleases) {
+            append("""  <div class="short-div p-1">${formatVersion(ubuntuVersionMap[release])}</div>""").append('\n')
+        }
+        append("</div>").append('\n')
     }
 }
 
@@ -95,7 +97,7 @@ fun generateVersionColor(rawVersion: String) =
 //          <div class="short-div release-header p-1">eoan</div>
 //          <div class="short-div release-header p-1">focal</div>
 fun generateReleaseHeader() =
-    UbuntuRelease.values().joinToString(separator = "") { descriptor ->
+    shownReleases.joinToString(separator = "") { descriptor ->
         """<div class="short-div release-header p-1">${descriptor.toString().toLowerCase()}</div>"""
     }
 
